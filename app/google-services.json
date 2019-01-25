@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "1039700788833",
+    "firebase_url": "https://marylimpapp.firebaseio.com",
+    "project_id": "marylimpapp",
+    "storage_bucket": "marylimpapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039700788833:android:32f0494fff07f031",
+        "android_client_info": {
+          "package_name": "br.com.mribeiro.marylimp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039700788833-68bibj977d3duevt1dun5j83lmvthjug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.mribeiro.marylimp",
+            "certificate_hash": "534acbb2d4c4763fd8371b1c8b3bd33f070d3fb7"
+          }
+        },
+        {
+          "client_id": "1039700788833-6e04bl2gjv0p49hvper4an32el8abq8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQwfpqPf7RFUO-8ga5E4jJ0U4G0TDLnaI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039700788833-6e04bl2gjv0p49hvper4an32el8abq8f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1039700788833-dsit04ck7rdk0h0nv73pn2fa5p9unrh5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.mribeiro.marylimp"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
