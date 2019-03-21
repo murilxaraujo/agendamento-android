@@ -1,8 +1,10 @@
 package br.com.mribeiro.marylimp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -42,7 +44,7 @@ public class Settings extends AppCompatActivity {
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot doc = task.getResult();
-                        if (task.getResult().getDouble("type").intValue() == 0) {
+                        if (doc.getLong("type").intValue() == 0) {
                             //Pessoa Física
                             first.setHint("Nome");
                             first.getEditText().setText(doc.getString("fname")+ " " + doc.getString("sname"));
@@ -57,6 +59,7 @@ public class Settings extends AppCompatActivity {
                             fourth.getEditText().setText(doc.getString("email"));
 
                         } else {
+
                             //Pessoa Jurídica
                             first.setHint("Razão social");
                             first.getEditText().setText("razao");
@@ -89,6 +92,18 @@ public class Settings extends AppCompatActivity {
     }
 
     public void signOut(View view) {
+
+        new AlertDialog.Builder(this).setTitle("Fazer logoff").setMessage("Você deseja mesmo sair?").setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).setNegativeButton("Nao", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        })
         auth.signOut();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
