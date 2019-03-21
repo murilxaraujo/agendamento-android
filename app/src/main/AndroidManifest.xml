@@ -3,7 +3,7 @@
     package="br.com.mribeiro.marylimp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,12 +19,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".Settings" />
+        <activity android:name=".SettingsActivity" />
         <activity
             android:name=".CreateAccoutActivity"
             android:label="@string/title_activity_create_accout"
             android:theme="@style/AppTheme" />
         <activity android:name=".RecoverPasswordActivity"></activity>
     </application>
-
+    //.idea/caches/
 </manifest>
