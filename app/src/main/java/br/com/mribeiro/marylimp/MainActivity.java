@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Console;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager  addressesManager, visitsManager;
     ArrayList<Address> addresses = new ArrayList<>();
     AddressesRecyclerViewAdapter addressesAdapter;
+    TextView homeTextView;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
+
+            homeTextView = findViewById(R.id.homeTextView);
             visitsRecyclerView = findViewById(R.id.visitsRecyclerView);
             addressesRecyclerView = findViewById(R.id.AddressessRecyclerView);
             visitsRecyclerView.setHasFixedSize(true);
@@ -49,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             db.collection("users").document(auth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-
+                    homeTextView.setText("Olá, "+documentSnapshot.get("fname"));
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -57,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+
+            loadData();
         }
     }
 
@@ -64,10 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         setupAddressesRecyclerView();
+        setupVisitsRecyclerView();
     }
 
     private void setupAddressesRecyclerView() {
-        db.collection("users").document(auth.getUid()).collection("enderecos").orderBy("created ").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("users").document(auth.getUid()).collection("enderecos").orderBy("created").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (addresses.size() > 0) {
@@ -78,12 +88,15 @@ public class MainActivity extends AppCompatActivity {
                     Address item = new Address(document.getString("logradouro"),document.getDouble("type").intValue(), document.getId());
                     addresses.add(item);
                 }
-                addressesAdapter.notifyDataSetChanged();
+                AddressesRecyclerViewAdapter adapter = new AddressesRecyclerViewAdapter(addresses, MainActivity.this);
+
+                addressesRecyclerView.setAdapter(adapter);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(MainActivity.this, "Erro ao buscar endereços", Toast.LENGTH_LONG).show();
             }
         });
     }
