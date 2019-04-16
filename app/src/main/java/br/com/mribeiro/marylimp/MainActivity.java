@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView addressesRecyclerView, visitsRecyclerView;
     RecyclerView.LayoutManager  addressesManager, visitsManager;
     ArrayList<Address> addresses = new ArrayList<>();
+    ArrayList<Visit> visits = new ArrayList<>();
     AddressesRecyclerViewAdapter addressesAdapter;
     TextView homeTextView;
 
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
 
-
         setupAddressesRecyclerView();
         setupVisitsRecyclerView();
     }
@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupVisitsRecyclerView() {
-
+        VisitsRecyclerViewAdapter adapter = new VisitsRecyclerViewAdapter(visits, MainActivity.this);
+        visitsRecyclerView.setAdapter(adapter);
     }
 
     public void openSettings(View view) {

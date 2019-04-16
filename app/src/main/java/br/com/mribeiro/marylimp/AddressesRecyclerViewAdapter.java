@@ -38,9 +38,10 @@ public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<AddressVi
 
     @Override
     public void onBindViewHolder(@NonNull final AddressViewHolder addressViewHolder, int i) {
-        Log.d(TAG, "onBindViewHolder: binding the address "+Integer.toString(i));
+
         if (i == 0) {
-            addressViewHolder.label.setText("Novo endereço");
+            addressViewHolder.label.setText("Novo imóvel");
+            addressViewHolder.icon.setImageResource(R.drawable.ic_add_circle_black_24dp);
             addressViewHolder.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onClick(View view, int position, boolean isLongClick) {
@@ -54,8 +55,10 @@ public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<AddressVi
 
             switch (addresses.get(i-1).getIcon()) {
                 case 0:
+                    addressViewHolder.icon.setImageResource(R.drawable.ic_home_black_24dp);
                     break;
                 case 1:
+                    addressViewHolder.icon.setImageResource(R.drawable.ic_business_black_24dp);
                     break;
                 default:
             }
