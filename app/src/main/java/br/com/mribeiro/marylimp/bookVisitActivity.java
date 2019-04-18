@@ -34,6 +34,9 @@ public class bookVisitActivity extends AppCompatActivity {
     int selectedAddressIndex;
     String selectedAddressUID;
 
+    //Third page variables
+    int selectedTipoDeLimpeza;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +76,37 @@ public class bookVisitActivity extends AppCompatActivity {
 
         //Setting up third page
         thirdPage = findViewById(R.id.thirdBookVisitPage);
+        Button expressaButton = findViewById(R.id.thirdPageExpressaButton);
+        Button detalhadaButton = findViewById(R.id.thirdPageDetalhadaButton);
+        Button passadoriaButton = findViewById(R.id.thirdPagePassadoriaButton);
+        Button outrosButton = findViewById(R.id.thidPageOutrosButton);
+
+        expressaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedTipoDeLimpeza = 0;
+                goToPage(4);
+            }
+        });
+
+        detalhadaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedTipoDeLimpeza = 1;
+                goToPage(4);
+            }
+        });
+        
+        passadoriaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedTipoDeLimpeza = 2;
+                goToPage(4);
+            }
+        });
+
+        // TODO: 18/04/19 Make function to show others 
+
         //Setting up fourth page
         fourthPage = findViewById(R.id.fourthBookVisitPage);
         //Setting up fifth page
