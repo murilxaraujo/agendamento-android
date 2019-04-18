@@ -44,6 +44,9 @@ public class AddAddressActivity extends AppCompatActivity {
         firstPage.setVisibility(View.GONE);
         secondPage.setVisibility(View.GONE);
         thirdPage.setVisibility(View.GONE);
+        fourthPage.setVisibility(View.GONE);
+        fifthPage.setVisibility(View.GONE);
+        sixthPage.setVisibility(View.GONE);
     }
 
     private void showPage(int page) {
@@ -58,13 +61,13 @@ public class AddAddressActivity extends AppCompatActivity {
                 thirdPage.setVisibility(View.VISIBLE);
                 break;
             case 4:
-                thirdPage.setVisibility(View.VISIBLE);
+                fourthPage.setVisibility(View.VISIBLE);
                 break;
             case 5:
-                thirdPage.setVisibility(View.VISIBLE);
+                fifthPage.setVisibility(View.VISIBLE);
                 break;
             case 6:
-                thirdPage.setVisibility(View.VISIBLE);
+                sixthPage.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -279,7 +282,7 @@ public class AddAddressActivity extends AppCompatActivity {
         });
 
         hideAllPages();
-        showPage(1);
+        showPage(5);
 
 
 

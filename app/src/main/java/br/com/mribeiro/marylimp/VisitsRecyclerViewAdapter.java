@@ -43,7 +43,7 @@ public class VisitsRecyclerViewAdapter extends RecyclerView.Adapter<VisitsViewHo
             visitsViewHolder.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onClick(View view, int position, boolean isLongClick) {
-                    Intent intent = new Intent(mainActivity, AddVisitActivity.class);
+                    Intent intent = new Intent(mainActivity, bookVisitActivity.class);
                     mainActivity.startActivity(intent);
                 }
             });

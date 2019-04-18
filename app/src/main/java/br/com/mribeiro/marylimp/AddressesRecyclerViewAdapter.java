@@ -1,5 +1,6 @@
 package br.com.mribeiro.marylimp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -18,9 +19,9 @@ public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<AddressVi
     private static final String TAG = "AddressesRecyclerViewAd";
 
     private ArrayList<Address> addresses = new ArrayList<>();
-    private MainActivity mainActivity;
+    private Activity mainActivity;
 
-    public AddressesRecyclerViewAdapter(ArrayList<Address> addresses, MainActivity mainActivity) {
+    public AddressesRecyclerViewAdapter(ArrayList<Address> addresses, Activity mainActivity) {
         this.addresses = addresses;
         this.mainActivity = mainActivity;
     }
@@ -52,6 +53,12 @@ public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<AddressVi
         } else {
             addressViewHolder.label.setText(addresses.get(i-1).getLogradouro());
             addressViewHolder.uid = addresses.get(i-1).getUid();
+            addressViewHolder.setItemClickListener(new ItemClickListener() {
+                @Override
+                public void onClick(View view, int position, boolean isLongClick) {
+
+                }
+            });
 
             switch (addresses.get(i-1).getIcon()) {
                 case 0:
