@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
@@ -12,9 +12,12 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,34 +31,322 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabTextColor="@color/common_google_signin_btn_text_dark_default"
-            app:tabIndicatorColor="@color/common_google_signin_btn_text_dark_default">
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/pfTabItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/common_google_signin_btn_icon_dark"
-                android:text="Pessoa física" />
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/pjTabItem2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:icon="@drawable/common_google_signin_btn_icon_dark"
-                android:text="Pessoa jurídica" />
-
-        </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/container"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar">
 
-</android.support.design.widget.CoordinatorLayout>
+        <Button
+            android:id="@+id/pfSelectButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pessoa física"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+            android:textColor="@color/ms_white" />
+
+        <Button
+            android:id="@+id/pjSelectButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pessoa jurídica"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+            android:textColor="@color/ms_white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <ScrollView
+            android:id="@+id/pfScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/pfLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfNomeTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Nome"
+                    android:paddingBottom="10dp"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/firstNamePFTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfSobrenomeTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Sobrenome"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/surNamePFTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfCPFTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="CPF"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/cpfPFTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfTelefoneTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Telefone"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/telPFTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfEmailTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Email"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/emailPFVT"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfSenhaTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Senha"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/passWdPFTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pfSenhaRepeatTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Repita a senha"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/pfSubmitButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:onClick="pFSubmitForm"
+                    android:text="Enviar"
+                    android:textColor="@color/ms_white" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/pjScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/pjLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjCNPJTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="CNPJ"
+                    android:paddingBottom="10dp"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true">
+
+                    <android.support.design.widget.TextInputEditText
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjRazaoTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Razao Social"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjCPFTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="CPF representante legal"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjNomeTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Representante legal"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjTelefoneTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Telefone"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjEmailTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Email"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjSenhaTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Senha"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pjSenhaRepeatTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Repita a senha"
+                    android:paddingBottom="10dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/pjSubmitButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:onClick="pJSubmitForm"
+                    android:text="Enviar"
+                    android:textColor="@color/ms_white" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

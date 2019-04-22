@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.stepstone.stepper.StepperLayout;
 
@@ -179,6 +180,7 @@ public class AddAddressActivity extends AppCompatActivity {
         metragemTextInputLayout = findViewById(R.id.thirdPageMetragemTextInput);
         metragemSeekBar = findViewById(R.id.thirdPageMetragemSeekBar);
         metragemSeekBar.setMax(300);
+        metragemSeekBar.setVisibility(View.GONE);
         metragemSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -200,11 +202,11 @@ public class AddAddressActivity extends AppCompatActivity {
         thirdPageNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                metragemDoImovel = Integer.valueOf(metragemTextInputLayout.getEditText().getText().toString());
                 if (canGoToPage(4)) {
                     goToPage(4);
                 } else {
-
+                    Toast.makeText(getApplicationContext(), "Você precisa inserir uma metragem válida para prosseguir", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -234,7 +236,7 @@ public class AddAddressActivity extends AppCompatActivity {
                 if (canGoToPage(5)) {
                     goToPage(5);
                 } else {
-
+                    Toast.makeText(getApplicationContext(), "Você precisa preencher todos os dados obrigatórios corretamente para prosseguir", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -246,7 +248,7 @@ public class AddAddressActivity extends AppCompatActivity {
                 if (canGoToPage(5)) {
                     goToPage(5);
                 } else {
-
+                    Toast.makeText(getApplicationContext(), "Você precisa preencher todos os dados obrigatórios corretamente para prosseguir", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -257,7 +259,7 @@ public class AddAddressActivity extends AppCompatActivity {
                 if (canGoToPage(5)) {
                     goToPage(5);
                 } else {
-
+                    Toast.makeText(getApplicationContext(), "Você precisa preencher todos os dados obrigatórios corretamente para prosseguir", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -282,7 +284,7 @@ public class AddAddressActivity extends AppCompatActivity {
         });
 
         hideAllPages();
-        showPage(5);
+        showPage(1);
 
 
 

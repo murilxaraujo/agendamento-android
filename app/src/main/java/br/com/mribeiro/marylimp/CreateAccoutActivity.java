@@ -1,8 +1,11 @@
 package br.com.mribeiro.marylimp;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -17,124 +20,199 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.gc.materialdesign.widgets.ProgressDialog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateAccoutActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_accout);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
+        setupView();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_accout, menu);
-        return true;
+    private void setupView() {
+        Button pessoaFisicaButton = findViewById(R.id.pfSelectButton);
+        Button pessoaJuridicaButton = findViewById(R.id.pjSelectButton);
+        final ScrollView pJScrollView = findViewById(R.id.pjScrollView);
+        final ScrollView pfScrollView = findViewById(R.id.pfScrollView);
+        pessoaFisicaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pJScrollView.setVisibility(View.GONE);
+                pfScrollView.setVisibility(View.VISIBLE);
+            }
+        });
+        pessoaJuridicaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pfScrollView.setVisibility(View.GONE);
+                pJScrollView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void pFSubmitForm(View view) {
+        TextInputLayout nome, sobrenome, cpf, telefone, senha, senha2, email;
+        nome = findViewById(R.id.pfNomeTextInput);
+        sobrenome = findViewById(R.id.pfSobrenomeTextInput);
+        cpf = findViewById(R.id.pfCPFTextInput);
+        telefone = findViewById(R.id.pfTelefoneTextInput);
+        senha = findViewById(R.id.pfSenhaTextInput);
+        senha2 = findViewById(R.id.pfSenhaRepeatTextInput);
+        email = findViewById(R.id.pfEmailTextInput);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        final ProgressDialog dialog = new ProgressDialog(CreateAccoutActivity.this, "Criando conta");
+        final Map<String, Object> user = new HashMap<>();
+
+        if (nome.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (sobrenome.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (cpf.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (telefone.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (senha.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (senha2.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (false) {
+            Toast.makeText(getApplicationContext(), "As senhas devem ser iguais", Toast.LENGTH_LONG).show();
+        } else if (email.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else {
+
+            user.put("cpf", cpf.getEditText().getText().toString());
+            user.put("email", email.getEditText().getText().toString());
+            user.put("fname", nome.getEditText().getText().toString());
+            user.put("sname", sobrenome.getEditText().getText().toString());
+            user.put("type", 0);
+            user.put("phone", telefone.getEditText().getText().toString());
+            user.put("creatd", new Date());
+
+            dialog.show();
+            auth.createUserWithEmailAndPassword(email.getEditText().getText().toString(), senha.getEditText().getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                @Override
+                public void onSuccess(AuthResult authResult) {
+
+                    db.collection("users").document(authResult.getUser().getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Erro ao subir dados de usuário para a núvem", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Erro ao criar conta, tente novamente mais tarde", Toast.LENGTH_LONG).show();
+                }
+            });
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public void pJSubmitForm(View view) {
+        TextInputLayout cnpj, razao, cpf, representante, telefone, email, senha, senha2;
+        cnpj = findViewById(R.id.pjCNPJTextInput);
+        razao = findViewById(R.id.pjRazaoTextInput);
+        cpf = findViewById(R.id.pjCPFTextInput);
+        representante = findViewById(R.id.pjNomeTextInput);
+        telefone = findViewById(R.id.pjTelefoneTextInput);
+        email = findViewById(R.id.pjEmailTextInput);
+        senha = findViewById(R.id.pjSenhaTextInput);
+        senha2 = findViewById(R.id.pjSenhaRepeatTextInput);
 
-        public PlaceholderFragment() {
+        final ProgressDialog dialog = new ProgressDialog(CreateAccoutActivity.this, "Criando conta");
+        final Map<String, Object> user = new HashMap<>();
+
+        if (cnpj.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (razao.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (cpf.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (telefone.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (senha.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (senha2.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (senha.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "As senhas devem ser iguais", Toast.LENGTH_LONG).show();
+        } else if (email.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else if (representante.getEditText().getText().toString().isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Preecha todos os campos corretamente", Toast.LENGTH_LONG).show();
+        } else {
+            user.put("cpf", cpf.getEditText().getText().toString());
+            user.put("email", email.getEditText().getText().toString());
+            user.put("cnpj", cnpj.getEditText().getText().toString());
+            user.put("razao", razao.getEditText().getText().toString());
+            user.put("type", 1);
+            user.put("phone", telefone.getEditText().getText().toString());
+            user.put("creatd", new Date());
+            user.put("rep", representante.getEditText().getText().toString());
+
+            dialog.show();
+            auth.createUserWithEmailAndPassword(email.getEditText().getText().toString(), senha.getEditText().getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                @Override
+                public void onSuccess(AuthResult authResult) {
+
+                    db.collection("users").document(authResult.getUser().getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Erro ao subir dados de usuário para a núvem", Toast.LENGTH_LONG).show();
+
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Erro ao criar conta, tente novamente mais tarde", Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_create_accout, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
     }
 }

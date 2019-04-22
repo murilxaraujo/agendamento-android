@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".bookVisitActivity"></activity>
+        <activity android:name=".BookVisitActivity"></activity>
         <activity android:name=".AddVisitActivity" />
         <activity android:name=".AddAddressActivity" />
         <activity android:name=".MainActivity">

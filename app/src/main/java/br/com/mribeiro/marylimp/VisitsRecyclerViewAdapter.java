@@ -9,13 +9,6 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import br.com.mribeiro.marylimp.AddAddressActivity;
-import br.com.mribeiro.marylimp.ItemClickListener;
-import br.com.mribeiro.marylimp.MainActivity;
-import br.com.mribeiro.marylimp.R;
-import br.com.mribeiro.marylimp.Visit;
-import br.com.mribeiro.marylimp.VisitsViewHolder;
-
 public class VisitsRecyclerViewAdapter extends RecyclerView.Adapter<VisitsViewHolder>{
 
     private ArrayList<Visit> visits = new ArrayList<>();
@@ -43,7 +36,7 @@ public class VisitsRecyclerViewAdapter extends RecyclerView.Adapter<VisitsViewHo
             visitsViewHolder.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onClick(View view, int position, boolean isLongClick) {
-                    Intent intent = new Intent(mainActivity, bookVisitActivity.class);
+                    Intent intent = new Intent(mainActivity, BookVisitActivity.class);
                     mainActivity.startActivity(intent);
                 }
             });

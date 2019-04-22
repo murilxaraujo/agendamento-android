@@ -1,17 +1,11 @@
 package br.com.mribeiro.marylimp;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -44,7 +38,7 @@ public class CustomAddressesRecyclerViewAdapter extends RecyclerView.Adapter<Cus
         customAddressViewHolder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                ((bookVisitActivity)view.getContext()).addressSelected(position);
+                ((BookVisitActivity)view.getContext()).addressSelected(position);
             }
         });
         switch (addresses.get(i).getIcon()) {
