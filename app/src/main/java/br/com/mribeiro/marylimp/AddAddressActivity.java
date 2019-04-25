@@ -1,13 +1,11 @@
 package br.com.mribeiro.marylimp;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,27 +14,15 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
-
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Objects;
 import com.gc.materialdesign.widgets.ProgressDialog;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.JsonObject;
-import com.stepstone.stepper.StepperLayout;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,7 +45,7 @@ public class AddAddressActivity extends AppCompatActivity {
     Integer quantidadeDeBanheiros;
 
     //FifthPageVariables
-    String cepDoImovel, logradouroDoImovel, numeroDoImovel, complementoDoImovel, bairroDoImovel, cidadeDoImovel, estadoDoImovel;
+    String cepDoImovel, logradouroDoImovel, bairroDoImovel, cidadeDoImovel, estadoDoImovel;
     TextInputLayout cepTextInputLayout, logradouroTextInputLayout, numeroTextInputLayout, complementoTextInputLayout, bairroTextInputLayout, cidadeTextInputLayout, estadoTextInputLayout;
 
 
@@ -144,16 +130,12 @@ public class AddAddressActivity extends AppCompatActivity {
             tipoDeImovel = 0;
             if (canGoToPage(3)) {
                 goToPage(3);
-            } else {
-
             }
         });
         escritorioButton.setOnClickListener(v -> {
             tipoDeImovel = 1;
             if (canGoToPage(3)) {
                 goToPage(3);
-            } else {
-
             }
         });
 
@@ -172,26 +154,10 @@ public class AddAddressActivity extends AppCompatActivity {
         metragemSeekBar = findViewById(R.id.thirdPageMetragemSeekBar);
         metragemSeekBar.setMax(300);
         metragemSeekBar.setVisibility(View.GONE);
-        metragemSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                metragemDoImovel = progress;
-                metragemTextInputLayout.getEditText().setText(progress);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         Button thirdPageNextButton = findViewById(R.id.thirdPageNextButton);
         thirdPageNextButton.setOnClickListener(v -> {
-            metragemDoImovel = Integer.valueOf(metragemTextInputLayout.getEditText().getText().toString());
+            metragemDoImovel = Integer.valueOf(Objects.requireNonNull(metragemTextInputLayout.getEditText()).getText().toString());
             if (canGoToPage(4)) {
                 goToPage(4);
             } else {
@@ -210,8 +176,6 @@ public class AddAddressActivity extends AppCompatActivity {
             quantidadeDeBanheiros = 1;
             if (canGoToPage(5)) {
                 goToPage(5);
-            } else {
-
             }
         });
         twoButton.setOnClickListener(v -> {
@@ -239,9 +203,6 @@ public class AddAddressActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Você precisa preencher todos os dados obrigatórios corretamente para prosseguir", Toast.LENGTH_LONG).show();
             }
         });
-        Button fourthBackButton;
-        fourthBackButton = findViewById(R.id.fourthPageBackButton);
-        fourthBackButton.setOnClickListener(v -> goToPage(3));
 
         //Sets up fifth page
 
@@ -257,7 +218,7 @@ public class AddAddressActivity extends AppCompatActivity {
         estadoTextInputLayout = findViewById(R.id.fifthPageEstadoTextView);
 
         cepTextInputLayout.setOnFocusChangeListener((v, hasFocus) -> {
-            if (cepTextInputLayout.getEditText().getText().length() != 8) {
+            if (Objects.requireNonNull(cepTextInputLayout.getEditText()).getText().length() != 8) {
                 Toast.makeText(getApplicationContext(), "O CEP precisa ter 8 digitos, apenas numeros", Toast.LENGTH_LONG).show();
             } else {
                 getStringByCEP(cepTextInputLayout.getEditText().getText().toString());
@@ -268,7 +229,7 @@ public class AddAddressActivity extends AppCompatActivity {
 
         ImageButton searchIB = findViewById(R.id.fifthPageSearchButton);
         searchIB.setOnClickListener(v -> {
-            if (cepTextInputLayout.getEditText().getText().length() != 8) {
+            if (Objects.requireNonNull(cepTextInputLayout.getEditText()).getText().length() != 8) {
                 Toast.makeText(getApplicationContext(), "O CEP precisa ter 8 digitos, apenas numeros", Toast.LENGTH_LONG).show();
             } else {
                 getStringByCEP(cepTextInputLayout.getEditText().getText().toString());
@@ -290,34 +251,16 @@ public class AddAddressActivity extends AppCompatActivity {
         switch (page) {
             case 1:
                 return true;
-
             case 2:
                 return true;
-
             case 3:
-                if (tipoDeImovel == null || tipoDeImovel < 0 || tipoDeImovel > 2) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return (tipoDeImovel != null) && (tipoDeImovel >= 0) && (tipoDeImovel <= 2);
             case 4:
-                if (metragemDoImovel == null || metragemDoImovel < 20 || metragemDoImovel > 300 ) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return metragemDoImovel != null && metragemDoImovel >= 20 && metragemDoImovel <= 300;
             case 5:
-                if (quantidadeDeBanheiros == null || quantidadeDeBanheiros < 1 || quantidadeDeBanheiros > 4) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return quantidadeDeBanheiros != null && quantidadeDeBanheiros >= 1 && quantidadeDeBanheiros <= 4;
             case 6:
-                if (cepDoImovel == null || cepDoImovel == "" || logradouroDoImovel == null || logradouroDoImovel == "" || bairroDoImovel == null || bairroDoImovel == "" || estadoDoImovel == null || estadoDoImovel == "" || cidadeDoImovel == null || cidadeDoImovel == "") {
-                    return false;
-                } else {
-                    return true;
-                }
+                return cepDoImovel != null && !Objects.equals(cepDoImovel, "") && logradouroDoImovel != null && !Objects.equals(logradouroDoImovel, "") && bairroDoImovel != null && !Objects.equals(bairroDoImovel, "") && estadoDoImovel != null && !Objects.equals(estadoDoImovel, "") && cidadeDoImovel != null && !Objects.equals(cidadeDoImovel, "");
 
         }
         return false;
@@ -332,7 +275,7 @@ public class AddAddressActivity extends AppCompatActivity {
 
         Thread thread = new Thread(() -> {
             try (Response response = client.newCall(request).execute()) {
-                transformStringToJson(response.body().string());
+                transformStringToJson(Objects.requireNonNull(response.body()).string());
             } catch (IOException e) {
                 e.printStackTrace();
                 dialog1.dismiss();
@@ -352,10 +295,10 @@ public class AddAddressActivity extends AppCompatActivity {
                 cidadeTextInputLayout.setHintAnimationEnabled(false);
                 estadoTextInputLayout.setHintAnimationEnabled(false);
                 try {
-                    logradouroTextInputLayout.getEditText().setText(obj.getString("endereco"));
-                    bairroTextInputLayout.getEditText().setText(obj.getString("bairro"));
-                    cidadeTextInputLayout.getEditText().setText(obj.getString("cidade"));
-                    estadoTextInputLayout.getEditText().setText(obj.getString("uf"));
+                    Objects.requireNonNull(logradouroTextInputLayout.getEditText()).setText(obj.getString("endereco"));
+                    Objects.requireNonNull(bairroTextInputLayout.getEditText()).setText(obj.getString("bairro"));
+                    Objects.requireNonNull(cidadeTextInputLayout.getEditText()).setText(obj.getString("cidade"));
+                    Objects.requireNonNull(estadoTextInputLayout.getEditText()).setText(obj.getString("uf"));
                 } catch (Throwable t) {
                     Log.d("erro", "transformStringToJson: "+t);
                 }
@@ -363,15 +306,13 @@ public class AddAddressActivity extends AppCompatActivity {
                 dialog1.dismiss();
             });
         } catch (Throwable t) {
-            runOnUiThread(() -> {
-                dialog1.dismiss();
-            });
+            runOnUiThread(() -> dialog1.dismiss());
             Log.d("erro", "transformStringToJson: "+t);
         }
     }
 
     private void saveInfoToDataBase() {
-        if (cepTextInputLayout.getEditText().getText().toString().isEmpty() || bairroTextInputLayout.getEditText().getText().toString().isEmpty() || cidadeTextInputLayout.getEditText().getText().toString().isEmpty() || estadoTextInputLayout.getEditText().getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(cepTextInputLayout.getEditText()).getText().toString().isEmpty() || Objects.requireNonNull(bairroTextInputLayout.getEditText()).getText().toString().isEmpty() || Objects.requireNonNull(cidadeTextInputLayout.getEditText()).getText().toString().isEmpty() || Objects.requireNonNull(estadoTextInputLayout.getEditText()).getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(), "Você precisa preencher todos os campos obrigatórios", Toast.LENGTH_LONG).show();
             return;
         }
@@ -384,16 +325,16 @@ public class AddAddressActivity extends AppCompatActivity {
         data.put("msqr", metragemDoImovel);
         data.put("banheiros", quantidadeDeBanheiros);
         data.put("cep", cepTextInputLayout.getEditText().getText().toString());
-        data.put("logradouro", logradouroTextInputLayout.getEditText().getText().toString());
-        data.put("numero", numeroTextInputLayout.getEditText().getText().toString());
-        data.put("complemento", complementoTextInputLayout.getEditText().getText().toString());
+        data.put("logradouro", Objects.requireNonNull(logradouroTextInputLayout.getEditText()).getText().toString());
+        data.put("numero", Objects.requireNonNull(numeroTextInputLayout.getEditText()).getText().toString());
+        data.put("complemento", Objects.requireNonNull(complementoTextInputLayout.getEditText()).getText().toString());
         data.put("bairro", bairroTextInputLayout.getEditText().getText().toString());
         data.put("cidade", cidadeTextInputLayout.getEditText().getText().toString());
         data.put("estado", estadoTextInputLayout.getEditText().getText().toString());
         data.put("created", new Date());
 
 
-        db.collection("users").document(auth.getUid()).collection("enderecos").add(data).addOnSuccessListener(documentReference -> {
+        db.collection("users").document(Objects.requireNonNull(auth.getUid())).collection("enderecos").add(data).addOnSuccessListener(documentReference -> {
             progressDialog.dismiss();
 
             Toast.makeText(getApplicationContext(), "Endereço adicionado com sucesso", Toast.LENGTH_LONG).show();
