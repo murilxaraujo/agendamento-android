@@ -48,7 +48,6 @@ public class AddAddressActivity extends AppCompatActivity {
     String cepDoImovel, logradouroDoImovel, bairroDoImovel, cidadeDoImovel, estadoDoImovel;
     TextInputLayout cepTextInputLayout, logradouroTextInputLayout, numeroTextInputLayout, complementoTextInputLayout, bairroTextInputLayout, cidadeTextInputLayout, estadoTextInputLayout;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

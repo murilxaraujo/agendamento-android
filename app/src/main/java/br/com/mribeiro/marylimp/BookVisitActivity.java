@@ -1,13 +1,8 @@
 package br.com.mribeiro.marylimp;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,23 +12,16 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.gc.materialdesign.widgets.ProgressDialog;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class BookVisitActivity extends AppCompatActivity {
 
@@ -76,6 +64,7 @@ public class BookVisitActivity extends AppCompatActivity {
         setupView();
     }
 
+    @SuppressLint("SetTextI18n")
     void setupView() {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -83,19 +72,9 @@ public class BookVisitActivity extends AppCompatActivity {
         //Setting up first page
         firstPage = findViewById(R.id.firstBookVisitPage);
         firstBackButton = findViewById(R.id.firstBackButton);
-        firstBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        firstBackButton.setOnClickListener(v -> finish());
         Button firstnextbutton = findViewById(R.id.firstNextButton);
-        firstnextbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToPage(2);
-            }
-        });
+        firstnextbutton.setOnClickListener(v -> goToPage(2));
 
         //Setting up second page
         secondPage = findViewById(R.id.secondBookVisitPage);
@@ -105,12 +84,7 @@ public class BookVisitActivity extends AppCompatActivity {
         addressesRecyclerView.setLayoutManager(addressesManager);
         setupAddressesRecyclerView();
         Button secondBackButton = findViewById(R.id.secondPageBackButton);
-        secondBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToPage(1);
-            }
-        });
+        secondBackButton.setOnClickListener(v -> goToPage(1));
 
         //Setting up third page
         thirdPage = findViewById(R.id.thirdBookVisitPage);
@@ -146,15 +120,12 @@ public class BookVisitActivity extends AppCompatActivity {
             inityear = calendar.get(Calendar.YEAR);
             initmonth = calendar.get(Calendar.MONTH);
             initdayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            datePickerDialog = new DatePickerDialog(BookVisitActivity.this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    dateTextView.setText(dayOfMonth + "/" + (month+1) + "/" + year);
-                    selectedDay = dayOfMonth;
-                    selectedMonth = month+1;
-                    selectedYear = year;
-                    searchForDate(selectedDay,selectedMonth,selectedYear);
-                }
+            datePickerDialog = new DatePickerDialog(BookVisitActivity.this, (view, year, month, dayOfMonth) -> {
+                dateTextView.setText(dayOfMonth + "/" + (month+1) + "/" + year);
+                selectedDay = dayOfMonth;
+                selectedMonth = month+1;
+                selectedYear = year;
+                searchForDate(selectedDay,selectedMonth,selectedYear);
             }, inityear, initmonth ,initdayOfMonth);
             datePickerDialog.show();
         });
@@ -268,11 +239,11 @@ public class BookVisitActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                if (documentSnapshot.getLong("usos").intValue() == 0) {
+                if (Objects.requireNonNull(documentSnapshot.getLong("usos")).intValue() == 0) {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Cupom expirado", Toast.LENGTH_LONG).show();
                 } else {
-                    int discount = documentSnapshot.getLong("value").intValue();
+                    int discount = Objects.requireNonNull(documentSnapshot.getLong("value")).intValue();
                     finalprice = finalprice - discount;
                     updatePriceLabel(finalprice);
                     Toast.makeText(getApplicationContext(), "Cupom aplicado com sucesso", Toast.LENGTH_LONG).show();
@@ -289,7 +260,7 @@ public class BookVisitActivity extends AppCompatActivity {
 
     private void setupAddressesRecyclerView() {
         db.collection("users")
-                .document(auth.getUid())
+                .document(Objects.requireNonNull(auth.getUid()))
                 .collection("enderecos")
                 .orderBy("created")
                 .get()
@@ -299,7 +270,7 @@ public class BookVisitActivity extends AppCompatActivity {
                     }
 
                     for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
-                        Address item = new Address(document.getString("logradouro"),document.getDouble("type").intValue(), document.getId());
+                        Address item = new Address(document.getString("logradouro"), Objects.requireNonNull(document.getDouble("type")).intValue(), document.getId());
                         addresses.add(item);
                     }
                     CustomAddressesRecyclerViewAdapter adapter = new CustomAddressesRecyclerViewAdapter(addresses, BookVisitActivity.this);
@@ -315,6 +286,7 @@ public class BookVisitActivity extends AppCompatActivity {
         goToPage(3);
     }
 
+    @SuppressLint("SetTextI18n")
     private void searchForDate(int day, int month, int year) {
         Calendar innerCalendar = Calendar.getInstance();
         int currentYear = innerCalendar.get(Calendar.YEAR);
@@ -367,7 +339,7 @@ public class BookVisitActivity extends AppCompatActivity {
                         Log.d("getting document", "onSuccess: "+documentSnapshot);
                         if (documentSnapshot.exists()) {
                             fourthPageInformationTextView.setText(documentSnapshot.getReference().toString());
-                            populateDisponibilidadeInformation(documentSnapshot.getLong("manha").intValue(), documentSnapshot.getLong("tarde").intValue(), documentSnapshot.getLong("noite").intValue());
+                            populateDisponibilidadeInformation(Objects.requireNonNull(documentSnapshot.getLong("manha")).intValue(), documentSnapshot.getLong("tarde").intValue(), documentSnapshot.getLong("noite").intValue());
                         } else {
                             fourthPageInformationTextView.setText("documento não existe");
                             populateDisponibilidadeInformation(0, 0, 0);
@@ -380,6 +352,7 @@ public class BookVisitActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void populateDisponibilidadeInformation(int manha, int tarde, int noite) {
         manhaButton.setVisibility(View.GONE);
         tardeButton.setVisibility(View.GONE);
@@ -410,13 +383,13 @@ public class BookVisitActivity extends AppCompatActivity {
         dialog.show();
 
         db.collection("users")
-                .document(auth.getUid())
+                .document(Objects.requireNonNull(auth.getUid()))
                 .collection("enderecos")
                 .document(selectedAddressUID)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        int metragem = documentSnapshot.getLong("msqr").intValue();
+                        int metragem = Objects.requireNonNull(documentSnapshot.getLong("msqr")).intValue();
 
                         if (metragem < 40) {
                             if (selectedTipoDeLimpeza == 0) {
@@ -473,14 +446,16 @@ public class BookVisitActivity extends AppCompatActivity {
                 });
     }
 
+    @SuppressLint("SetTextI18n")
     private void updatePriceLabel(int valor) {
         finalprice = valor;
 
-        Long finalprice = Long.valueOf(valor/100);
+        long finalprice = (long) (valor / 100);
         TextView priceTV = findViewById(R.id.fifthPagePriceTextView);
         priceTV.setText("R$ "+finalprice);
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateServicesLabel() {
         TextView infoTV = findViewById(R.id.fifthPageInfoTextView);
         switch (selectedTipoDeLimpeza) {
