@@ -1,7 +1,9 @@
 package br.com.mribeiro.marylimp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -77,28 +79,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAddressesRecyclerView() {
-        db.collection("users").document(auth.getUid()).collection("enderecos").orderBy("created").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (addresses.size() > 0) {
-                    addresses.clear();
-                }
+        db.collection("users")
+                .document(auth.getUid())
+                .collection("enderecos")
+                .orderBy("created")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (addresses.size() > 0) {
+                        addresses.clear();
+                    }
 
-                for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
-                    Address item = new Address(document.getString("logradouro"),document.getDouble("type").intValue(), document.getId());
-                    addresses.add(item);
-                }
-                AddressesRecyclerViewAdapter adapter = new AddressesRecyclerViewAdapter(addresses, MainActivity.this);
+                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
+                        Address item = new Address(document.getString("logradouro"),document.getDouble("type").intValue(), document.getId());
+                        addresses.add(item);
+                    }
+                    AddressesRecyclerViewAdapter adapter = new AddressesRecyclerViewAdapter(addresses, MainActivity.this);
 
-                addressesRecyclerView.setAdapter(adapter);
+                    addressesRecyclerView.setAdapter(adapter);
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Erro ao buscar endereços", Toast.LENGTH_LONG).show();
-            }
-        });
+                }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Erro ao buscar endereços", Toast.LENGTH_LONG).show());
     }
 
     private void setupVisitsRecyclerView() {
@@ -109,5 +108,28 @@ public class MainActivity extends AppCompatActivity {
     public void openSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    public void deleteAddress(int position) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Você deseja mesmo apagar este endereço?");
+        builder.setTitle("Apagar endereço");
+        builder.setPositiveButton("Sim", (dialog, which) -> {
+            db.collection("users")
+                    .document(auth.getUid())
+                    .collection("enderecos")
+                    .document(addresses.get(position-1).getUid())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getApplicationContext(), "Endereço apagado com sucesso", Toast.LENGTH_LONG).show();
+                        addresses.remove(position-1);
+                        AddressesRecyclerViewAdapter newAdapter = new AddressesRecyclerViewAdapter(addresses, MainActivity.this);
+                        addressesRecyclerView.setAdapter(newAdapter);
+
+                    }).addOnFailureListener(e -> {
+                Toast.makeText(getApplicationContext(), "Houve um erro ao apagar o endereço, tente novamente mais tarde", Toast.LENGTH_LONG).show();
+            });
+        }).setNegativeButton("Não", (dialog, which) -> { }).show();
     }
 }

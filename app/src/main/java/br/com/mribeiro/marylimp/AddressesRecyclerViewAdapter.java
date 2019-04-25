@@ -53,12 +53,7 @@ public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<AddressVi
         } else {
             addressViewHolder.label.setText(addresses.get(i-1).getLogradouro());
             addressViewHolder.uid = addresses.get(i-1).getUid();
-            addressViewHolder.setItemClickListener(new ItemClickListener() {
-                @Override
-                public void onClick(View view, int position, boolean isLongClick) {
-
-                }
-            });
+            addressViewHolder.setItemClickListener((view, position, isLongClick) -> ((MainActivity)view.getContext()).deleteAddress(position));
 
             switch (addresses.get(i-1).getIcon()) {
                 case 0:

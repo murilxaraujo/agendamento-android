@@ -39,53 +39,50 @@ public class SettingsActivity extends AppCompatActivity {
         if (auth.getCurrentUser() == null) {
             finish();
         } else {
-            db.collection("users").document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot doc = task.getResult();
-                        if (doc.getLong("type").intValue() == 0) {
-                            //Pessoa Física
-                            first.setHint("Nome");
-                            first.getEditText().setText(doc.getString("fname")+ " " + doc.getString("sname"));
+            db.collection("users").document(auth.getUid()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.getLong("type").intValue() == 0) {
+                        //Pessoa Física
+                        first.setHint("Nome");
+                        first.getEditText().setText(doc.getString("fname")+ " " + doc.getString("sname"));
 
-                            second.setHint("CPF");
-                            second.getEditText().setText(doc.getString("cpf"));
+                        second.setHint("CPF");
+                        second.getEditText().setText(doc.getString("cpf"));
 
-                            third.setHint("Telefone");
-                            third.getEditText().setText(doc.getString("phone"));
+                        third.setHint("Telefone");
+                        third.getEditText().setText(doc.getString("phone"));
 
-                            fourth.setHint("E-mail");
-                            fourth.getEditText().setText(doc.getString("email"));
-
-                        } else {
-
-                            //Pessoa Jurídica
-                            first.setHint("Razão social");
-                            first.getEditText().setText("razao");
-
-                            second.setHint("CNPJ");
-                            second.getEditText().setText("cnpj");
-
-                            third.setHint("Telefone");
-                            third.getEditText().setText("phone");
-
-                            fourth.setHint("E-mail");
-                            fourth.getEditText().setText(doc.getString("email"));
-
-                            fifth.setHint("Representante legal");
-                            fifth.getEditText().setText("rep");
-                            fifth.setVisibility(View.VISIBLE);
-
-                            sixth.setHint("CPF Representante Legal");
-                            sixth.getEditText().setText("cpf");
-                            sixth.setVisibility(View.VISIBLE);
-
-                        }
+                        fourth.setHint("E-mail");
+                        fourth.getEditText().setText(doc.getString("email"));
 
                     } else {
 
+                        //Pessoa Jurídica
+                        first.setHint("Razão social");
+                        first.getEditText().setText("razao");
+
+                        second.setHint("CNPJ");
+                        second.getEditText().setText("cnpj");
+
+                        third.setHint("Telefone");
+                        third.getEditText().setText("phone");
+
+                        fourth.setHint("E-mail");
+                        fourth.getEditText().setText(doc.getString("email"));
+
+                        fifth.setHint("Representante legal");
+                        fifth.getEditText().setText("rep");
+                        fifth.setVisibility(View.VISIBLE);
+
+                        sixth.setHint("CPF Representante Legal");
+                        sixth.getEditText().setText("cpf");
+                        sixth.setVisibility(View.VISIBLE);
+
                     }
+
+                } else {
+
                 }
             });
         }
@@ -93,24 +90,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void signOut(View view) {
 
-        new AlertDialog.Builder(this).setTitle("Fazer logoff").setMessage("Você deseja mesmo sair?").setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        }).setNegativeButton("Nao", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        }).setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        auth.signOut();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        new AlertDialog.Builder(this)
+                .setTitle("Fazer logoff")
+                .setMessage("Você deseja mesmo sair?")
+                .setNegativeButton("Nao", (dialog, which) -> {}).setPositiveButton("Sim", (dialog, which) -> {
+                    auth.signOut();
+                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }).show();
     }
 }

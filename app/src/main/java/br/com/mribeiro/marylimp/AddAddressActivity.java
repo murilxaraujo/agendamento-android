@@ -1,6 +1,8 @@
 package br.com.mribeiro.marylimp;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -40,7 +42,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class AddAddressActivity extends AppCompatActivity {
-    ConstraintLayout firstPage, secondPage, thirdPage, fourthPage, fifthPage, sixthPage;
+    ConstraintLayout firstPage, secondPage, thirdPage, fourthPage, fifthPage;
     Button firstNextButton, secondNextButton;
     Button firstBackButton, secondBackButton, thirdBackButton , fouthBackButton, fifthBackButton;
     ProgressDialog dialog;
@@ -80,7 +82,6 @@ public class AddAddressActivity extends AppCompatActivity {
         thirdPage.setVisibility(View.GONE);
         fourthPage.setVisibility(View.GONE);
         fifthPage.setVisibility(View.GONE);
-        sixthPage.setVisibility(View.GONE);
     }
 
     private void showPage(int page) {
@@ -100,9 +101,6 @@ public class AddAddressActivity extends AppCompatActivity {
             case 5:
                 fifthPage.setVisibility(View.VISIBLE);
                 break;
-            case 6:
-                sixthPage.setVisibility(View.VISIBLE);
-                break;
         }
     }
 
@@ -114,7 +112,7 @@ public class AddAddressActivity extends AppCompatActivity {
         fifthPage = findViewById(R.id.addAddressFithPage);
 
         dialog = new ProgressDialog(AddAddressActivity.this, "");
-        dialog1 = new ProgressDialog(AddAddressActivity.this, "Buscando");
+
         firstBackButton = findViewById(R.id.firstBackButton);
         firstBackButton.setOnClickListener(v -> finish());
 
@@ -158,9 +156,12 @@ public class AddAddressActivity extends AppCompatActivity {
 
             }
         });
-        outrosButton.setOnClickListener(v -> {
-            // TODO: 15/04/19 Add function to contact
 
+        outrosButton.setOnClickListener(v -> {
+            String url = "http://marylimpbrasil.com.br/services.html";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });
 
         //Sets up third Page
@@ -271,7 +272,7 @@ public class AddAddressActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "O CEP precisa ter 8 digitos, apenas numeros", Toast.LENGTH_LONG).show();
             } else {
                 getStringByCEP(cepTextInputLayout.getEditText().getText().toString());
-
+                dialog1 = new ProgressDialog(AddAddressActivity.this, "Buscando");
                 dialog1.show();
             }
         });
@@ -345,20 +346,26 @@ public class AddAddressActivity extends AppCompatActivity {
         try {
             JSONObject obj = new JSONObject(objectString);
             Looper.prepare();
-            logradouroTextInputLayout.setHintAnimationEnabled(false);
-            bairroTextInputLayout.setHintAnimationEnabled(false);
-            cidadeTextInputLayout.setHintAnimationEnabled(false);
-            estadoTextInputLayout.setHintAnimationEnabled(false);
-            logradouroTextInputLayout.getEditText().setText(obj.getString("endereco"));
-            bairroTextInputLayout.getEditText().setText(obj.getString("bairro"));
-            cidadeTextInputLayout.getEditText().setText(obj.getString("cidade"));
-            estadoTextInputLayout.getEditText().setText(obj.getString("uf"));
+            runOnUiThread(() -> {
+                logradouroTextInputLayout.setHintAnimationEnabled(false);
+                bairroTextInputLayout.setHintAnimationEnabled(false);
+                cidadeTextInputLayout.setHintAnimationEnabled(false);
+                estadoTextInputLayout.setHintAnimationEnabled(false);
+                try {
+                    logradouroTextInputLayout.getEditText().setText(obj.getString("endereco"));
+                    bairroTextInputLayout.getEditText().setText(obj.getString("bairro"));
+                    cidadeTextInputLayout.getEditText().setText(obj.getString("cidade"));
+                    estadoTextInputLayout.getEditText().setText(obj.getString("uf"));
+                } catch (Throwable t) {
+                    Log.d("erro", "transformStringToJson: "+t);
+                }
 
-
-
-            dialog1.dismiss();
+                dialog1.dismiss();
+            });
         } catch (Throwable t) {
-            dialog1.dismiss();
+            runOnUiThread(() -> {
+                dialog1.dismiss();
+            });
             Log.d("erro", "transformStringToJson: "+t);
         }
     }

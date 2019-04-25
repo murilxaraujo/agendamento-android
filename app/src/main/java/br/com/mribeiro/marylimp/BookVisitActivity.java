@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -95,7 +97,6 @@ public class BookVisitActivity extends AppCompatActivity {
             }
         });
 
-
         //Setting up second page
         secondPage = findViewById(R.id.secondBookVisitPage);
         addressesRecyclerView = findViewById(R.id.AddressessRecyclerView);
@@ -118,70 +119,44 @@ public class BookVisitActivity extends AppCompatActivity {
         Button passadoriaButton = findViewById(R.id.thirdPagePassadoriaButton);
         Button outrosButton = findViewById(R.id.thidPageOutrosButton);
         Button thirdBackButton = findViewById(R.id.thirdPageBackButton);
-        thirdBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToPage(2);
-            }
-        });
-        expressaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedTipoDeLimpeza = 0;
-                goToPage(4);
-            }
+        thirdBackButton.setOnClickListener(v -> goToPage(2));
+        expressaButton.setOnClickListener(v -> {
+            selectedTipoDeLimpeza = 0;
+            goToPage(4);
         });
 
-        detalhadaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedTipoDeLimpeza = 1;
-                goToPage(4);
-            }
+        detalhadaButton.setOnClickListener(v -> {
+            selectedTipoDeLimpeza = 1;
+            goToPage(4);
         });
         
-        passadoriaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedTipoDeLimpeza = 2;
-                goToPage(4);
-            }
+        passadoriaButton.setOnClickListener(v -> {
+            selectedTipoDeLimpeza = 2;
+            goToPage(4);
         });
-
-        // TODO: 18/04/19 Make function to show others 
 
         //Setting up fourth page
         fourthPage = findViewById(R.id.fourthBookVisitPage);
         Button selectDateBtn = findViewById(R.id.fourthPageSelectDateButton);
         dateTextView = findViewById(R.id.fourthPageDateTextView);
         Button fourthBackButton = findViewById(R.id.fourthPageBackButton);
-        fourthBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToPage(3);
-            }
-        });
-        selectDateBtn.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.N)
-            @Override
-            public void onClick(View v) {
-                calendar = Calendar.getInstance();
-                inityear = calendar.get(Calendar.YEAR);
-                initmonth = calendar.get(Calendar.MONTH);
-                initdayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(BookVisitActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateTextView.setText(dayOfMonth + "/" + (month+1) + "/" + year);
-                        selectedDay = dayOfMonth;
-                        selectedMonth = month+1;
-                        selectedYear = year;
-                        searchForDate(selectedDay,selectedMonth,selectedYear);
-                    }
-                }, inityear, initmonth ,initdayOfMonth);
-                datePickerDialog.show();
-            }
-
+        fourthBackButton.setOnClickListener(v -> goToPage(3));
+        selectDateBtn.setOnClickListener(v -> {
+            calendar = Calendar.getInstance();
+            inityear = calendar.get(Calendar.YEAR);
+            initmonth = calendar.get(Calendar.MONTH);
+            initdayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            datePickerDialog = new DatePickerDialog(BookVisitActivity.this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    dateTextView.setText(dayOfMonth + "/" + (month+1) + "/" + year);
+                    selectedDay = dayOfMonth;
+                    selectedMonth = month+1;
+                    selectedYear = year;
+                    searchForDate(selectedDay,selectedMonth,selectedYear);
+                }
+            }, inityear, initmonth ,initdayOfMonth);
+            datePickerDialog.show();
         });
 
         fourthPageInformationTextView = findViewById(R.id.fourthPageInformationTextView);
@@ -192,82 +167,54 @@ public class BookVisitActivity extends AppCompatActivity {
         manhaButton.setVisibility(View.GONE);
         tardeButton.setVisibility(View.GONE);
         noiteButton.setVisibility(View.GONE);
-        manhaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedTurno = 0;
-                goToPage(5);
-                updateServicesLabel();
-                getFinalPrice();
-            }
+        manhaButton.setOnClickListener(v -> {
+            selectedTurno = 0;
+            goToPage(5);
+            updateServicesLabel();
+            getFinalPrice();
         });
-        tardeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedTurno = 1;
-                goToPage(5);
-                updateServicesLabel();
-                getFinalPrice();
-            }
+        tardeButton.setOnClickListener(v -> {
+            selectedTurno = 1;
+            goToPage(5);
+            updateServicesLabel();
+            getFinalPrice();
         });
-        noiteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedTurno = 2;
-                goToPage(5);
-                updateServicesLabel();
-                getFinalPrice();
-            }
+        noiteButton.setOnClickListener(v -> {
+            selectedTurno = 2;
+            goToPage(5);
+            updateServicesLabel();
+            getFinalPrice();
         });
 
         //Setting up fifth page
         fifthPage = findViewById(R.id.fifthBookVisitPage);
         Button fifthBackButton = findViewById(R.id.fifthPageBackButton);
-        fifthBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToPage(4);
-            }
-        });
+        fifthBackButton.setOnClickListener(v -> goToPage(4));
         
         Button contractButton = findViewById(R.id.viewContractButton);
-        contractButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 2019-04-22 Add contract link intent 
-            }
+        contractButton.setOnClickListener(v -> {
+            // TODO: 2019-04-22 Add contract link intent
         });
 
         Button addCuponButton = findViewById(R.id.adicionarCupomButton);
-        addCuponButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(BookVisitActivity.this);
-                builder.setTitle("Adicionar cupom");
+        addCuponButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(BookVisitActivity.this);
+            builder.setTitle("Adicionar cupom");
 
-                final EditText input = new EditText(BookVisitActivity.this);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setHint("Digite o cupom aqui");
-                input.setPadding(10, 10, 10, 10);
-                builder.setView(input);
+            final EditText input = new EditText(BookVisitActivity.this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setHint("Digite o cupom aqui");
+            input.setPadding(10, 10, 10, 10);
+            builder.setView(input);
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        cuponCode = input.getText().toString();
-                        appyCupon(input.getText().toString());
-                    }
-                });
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                cuponCode = input.getText().toString();
+                appyCupon(input.getText().toString());
+            });
 
-                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
 
-                builder.show();
-            }
+            builder.show();
         });
         //Setting up sixth page
         sixthPage = findViewById(R.id.sixthBookVisitPage);
@@ -316,56 +263,50 @@ public class BookVisitActivity extends AppCompatActivity {
     private void appyCupon(String cupon) {
         final ProgressDialog dialog = new ProgressDialog(BookVisitActivity.this, "Aplicando cupom");
         dialog.show();
-        db.collection("cupom").document(cupon).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    if (documentSnapshot.getLong("usos").intValue() == 0) {
-                        dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Cupom expirado", Toast.LENGTH_LONG).show();
-                    } else {
-                        int discount = documentSnapshot.getLong("value").intValue();
-                        finalprice = finalprice - discount;
-                        updatePriceLabel(finalprice);
-                        Toast.makeText(getApplicationContext(), "Cupom aplicado com sucesso", Toast.LENGTH_LONG).show();
-                    }
-                } else {
+        db.collection("cupom")
+                .document(cupon)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                if (documentSnapshot.getLong("usos").intValue() == 0) {
                     dialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Cupom não foi encontrado", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Cupom expirado", Toast.LENGTH_LONG).show();
+                } else {
+                    int discount = documentSnapshot.getLong("value").intValue();
+                    finalprice = finalprice - discount;
+                    updatePriceLabel(finalprice);
+                    Toast.makeText(getApplicationContext(), "Cupom aplicado com sucesso", Toast.LENGTH_LONG).show();
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+            } else {
                 dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Erro ao aplicar cupom", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Cupom não foi encontrado", Toast.LENGTH_LONG).show();
             }
+        }).addOnFailureListener(e -> {
+            dialog.dismiss();
+            Toast.makeText(getApplicationContext(), "Erro ao aplicar cupom", Toast.LENGTH_LONG).show();
         });
     }
 
     private void setupAddressesRecyclerView() {
-        db.collection("users").document(auth.getUid()).collection("enderecos").orderBy("created").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (addresses.size() > 0) {
-                    addresses.clear();
-                }
+        db.collection("users")
+                .document(auth.getUid())
+                .collection("enderecos")
+                .orderBy("created")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (addresses.size() > 0) {
+                        addresses.clear();
+                    }
 
-                for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
-                    Address item = new Address(document.getString("logradouro"),document.getDouble("type").intValue(), document.getId());
-                    addresses.add(item);
-                }
-                CustomAddressesRecyclerViewAdapter adapter = new CustomAddressesRecyclerViewAdapter(addresses, BookVisitActivity.this);
+                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
+                        Address item = new Address(document.getString("logradouro"),document.getDouble("type").intValue(), document.getId());
+                        addresses.add(item);
+                    }
+                    CustomAddressesRecyclerViewAdapter adapter = new CustomAddressesRecyclerViewAdapter(addresses, BookVisitActivity.this);
 
-                addressesRecyclerView.setAdapter(adapter);
+                    addressesRecyclerView.setAdapter(adapter);
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(BookVisitActivity.this, "Erro ao buscar endereços", Toast.LENGTH_LONG).show();
-            }
-        });
+                }).addOnFailureListener(e -> Toast.makeText(BookVisitActivity.this, "Erro ao buscar endereços", Toast.LENGTH_LONG).show());
     }
 
     public void addressSelected(int index) {
@@ -421,27 +362,21 @@ public class BookVisitActivity extends AppCompatActivity {
                     .collection(clearMonth)
                     .document(clearDay)
                     .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            dialog.dismiss();
-                            Log.d("getting document", "onSuccess: "+documentSnapshot);
-                            if (documentSnapshot.exists()) {
-                                fourthPageInformationTextView.setText(documentSnapshot.getReference().toString());
-                                populateDisponibilidadeInformation(documentSnapshot.getLong("manha").intValue(), documentSnapshot.getLong("tarde").intValue(), documentSnapshot.getLong("noite").intValue());
-                            } else {
-                                fourthPageInformationTextView.setText("documento não existe");
-                                populateDisponibilidadeInformation(0, 0, 0);
+                    .addOnSuccessListener(documentSnapshot -> {
+                        dialog.dismiss();
+                        Log.d("getting document", "onSuccess: "+documentSnapshot);
+                        if (documentSnapshot.exists()) {
+                            fourthPageInformationTextView.setText(documentSnapshot.getReference().toString());
+                            populateDisponibilidadeInformation(documentSnapshot.getLong("manha").intValue(), documentSnapshot.getLong("tarde").intValue(), documentSnapshot.getLong("noite").intValue());
+                        } else {
+                            fourthPageInformationTextView.setText("documento não existe");
+                            populateDisponibilidadeInformation(0, 0, 0);
 
-                            }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    dialog.dismiss();
-                    fourthPageInformationTextView.setText("Erro ao buscar dia, tente novamente mais tarde");
-                }
-            });
+                    }).addOnFailureListener(e -> {
+                        dialog.dismiss();
+                        fourthPageInformationTextView.setText("Erro ao buscar dia, tente novamente mais tarde");
+                    });
         }
     }
 
@@ -479,69 +414,63 @@ public class BookVisitActivity extends AppCompatActivity {
                 .collection("enderecos")
                 .document(selectedAddressUID)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    int metragem = documentSnapshot.getLong("msqr").intValue();
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        int metragem = documentSnapshot.getLong("msqr").intValue();
 
-                    if (metragem < 40) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 7500;
-                        } else {
-                            finalprice = 15000;
+                        if (metragem < 40) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 7500;
+                            } else {
+                                finalprice = 15000;
+                            }
+                        } else if (metragem < 70) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 9000;
+                            } else {
+                                finalprice = 18000;
+                            }
+                        } else if (metragem < 100) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 12000;
+                            } else {
+                                finalprice = 24000;
+                            }
+                        } else if (metragem < 120) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 17000;
+                            } else {
+                                finalprice = 34000;
+                            }
+                        } else if (metragem < 160) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 22000;
+                            } else {
+                                finalprice = 44000;
+                            }
+                        } else if (metragem < 220) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 30000;
+                            } else {
+                                finalprice = 60000;
+                            }
+                        } else if (metragem < 300) {
+                            if (selectedTipoDeLimpeza == 0) {
+                                finalprice = 40000;
+                            } else {
+                                finalprice = 80000;
+                            }
                         }
-                    } else if (metragem < 70) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 9000;
-                        } else {
-                            finalprice = 18000;
-                        }
-                    } else if (metragem < 100) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 12000;
-                        } else {
-                            finalprice = 24000;
-                        }
-                    } else if (metragem < 120) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 17000;
-                        } else {
-                            finalprice = 34000;
-                        }
-                    } else if (metragem < 160) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 22000;
-                        } else {
-                            finalprice = 44000;
-                        }
-                    } else if (metragem < 220) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 30000;
-                        } else {
-                            finalprice = 60000;
-                        }
-                    } else if (metragem < 300) {
-                        if (selectedTipoDeLimpeza == 0) {
-                            finalprice = 40000;
-                        } else {
-                            finalprice = 80000;
-                        }
+                        updatePriceLabel(finalprice);
+                        dialog.dismiss();
+                    } else {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Endereço selecionado não encontrado", Toast.LENGTH_LONG).show();
                     }
-                    updatePriceLabel(finalprice);
+                }).addOnFailureListener(e -> {
                     dialog.dismiss();
-                } else {
-                    dialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Endereço selecionado não encontrado", Toast.LENGTH_LONG).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                dialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Erro ao buscar endereço", Toast.LENGTH_LONG).show();
-            }
-        });
+                    Toast.makeText(getApplicationContext(), "Erro ao buscar endereço", Toast.LENGTH_LONG).show();
+                });
     }
 
     private void updatePriceLabel(int valor) {
