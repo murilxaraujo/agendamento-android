@@ -332,7 +332,6 @@ public class AddAddressActivity extends AppCompatActivity {
         data.put("estado", estadoTextInputLayout.getEditText().getText().toString());
         data.put("created", new Date());
 
-
         db.collection("users").document(Objects.requireNonNull(auth.getUid())).collection("enderecos").add(data).addOnSuccessListener(documentReference -> {
             progressDialog.dismiss();
 

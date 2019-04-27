@@ -3,7 +3,12 @@ package br.com.mribeiro.marylimp;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,17 +16,34 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.textclassifier.TextLinks;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gc.materialdesign.widgets.ProgressDialog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class BookVisitActivity extends AppCompatActivity {
 
@@ -54,6 +76,7 @@ public class BookVisitActivity extends AppCompatActivity {
     //FifthPage Variables
     int finalprice;
     boolean hasCupon;
+    String comment;
     String cuponCode;
 
     @Override
@@ -107,6 +130,13 @@ public class BookVisitActivity extends AppCompatActivity {
         passadoriaButton.setOnClickListener(v -> {
             selectedTipoDeLimpeza = 2;
             goToPage(4);
+        });
+
+        outrosButton.setOnClickListener(v -> {
+            String url = "http://marylimpbrasil.com.br/services.html";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });
 
         //Setting up fourth page
@@ -187,6 +217,9 @@ public class BookVisitActivity extends AppCompatActivity {
 
             builder.show();
         });
+
+        Button agendarButton = findViewById(R.id.agendarButton);
+        agendarButton.setOnClickListener(v -> agendar());
         //Setting up sixth page
         sixthPage = findViewById(R.id.sixthBookVisitPage);
 
@@ -246,6 +279,9 @@ public class BookVisitActivity extends AppCompatActivity {
                     int discount = Objects.requireNonNull(documentSnapshot.getLong("value")).intValue();
                     finalprice = finalprice - discount;
                     updatePriceLabel(finalprice);
+                    hasCupon = true;
+
+                    cuponCode = cupon;
                     Toast.makeText(getApplicationContext(), "Cupom aplicado com sucesso", Toast.LENGTH_LONG).show();
                 }
             } else {
@@ -468,6 +504,62 @@ public class BookVisitActivity extends AppCompatActivity {
             case 2:
                 infoTV.setText("Passadoria dia "+selectedDay+"/"+selectedMonth+"/"+selectedYear);
                 break;
+        }
+    }
+
+    private void agendar() {
+        comment = "";
+        TextInputLayout textInputLayout = findViewById(R.id.commentTextInputlayout);
+        if (!Objects.requireNonNull(textInputLayout.getEditText()).getText().toString().isEmpty()) {
+            comment = textInputLayout.getEditText().getText().toString();
+        }
+        gerarLinkDePagamento(finalprice);
+    }
+
+    private void gerarLinkDePagamento(int finalprice) {
+        OkHttpClient httpClient = new OkHttpClient();
+        String json = "{price: " + finalprice + ", email: " + Objects.requireNonNull(auth.getCurrentUser()).getEmail() + ", }";
+        String url = "";
+        RequestBody body = RequestBody.create(MediaType.get("application/json; charset-utf-8"), json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            transformStringToJson(Objects.requireNonNull(response.body()).string());
+        } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), "Erro ao criar pagamento, tente novamente mais tarde", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void savePaymentInfoToDB(String paymentLink) {
+        Map<String, Object> data = new HashMap<>();
+
+        data.put("ano", selectedYear);
+        data.put("confirmada", false);
+        data.put("dia", selectedDay);
+        data.put("mes", selectedMonth);
+        data.put("timestamp", new Date());
+        data.put("turno", selectedTurno);
+        data.put("user", Objects.requireNonNull(auth.getUid()));
+        data.put("link", paymentLink);
+        data.put("serviço", selectedTipoDeLimpeza);
+        data.put("observacoes", comment);
+
+        db.collection("agendamentos").add(data).addOnSuccessListener(documentReference -> {
+
+        }).addOnFailureListener(e -> {
+
+        });
+    }
+
+    private void transformStringToJson(String objectString) {
+        try {
+            JSONObject obj = new JSONObject(objectString);
+
+        } catch (Throwable t) {
+            Log.d("erro", "transformStringToJson: "+t);
         }
     }
 
