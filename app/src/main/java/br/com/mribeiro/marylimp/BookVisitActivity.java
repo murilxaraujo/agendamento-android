@@ -196,25 +196,20 @@ public class BookVisitActivity extends AppCompatActivity {
         contractButton.setOnClickListener(v -> {
             // TODO: 2019-04-22 Add contract link intent
         });
-
         Button addCuponButton = findViewById(R.id.adicionarCupomButton);
         addCuponButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(BookVisitActivity.this);
             builder.setTitle("Adicionar cupom");
-
             final EditText input = new EditText(BookVisitActivity.this);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             input.setHint("Digite o cupom aqui");
             input.setPadding(10, 10, 10, 10);
             builder.setView(input);
-
             builder.setPositiveButton("OK", (dialog, which) -> {
                 cuponCode = input.getText().toString();
                 appyCupon(input.getText().toString());
             });
-
             builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
-
             builder.show();
         });
 
@@ -557,7 +552,7 @@ public class BookVisitActivity extends AppCompatActivity {
     private void transformStringToJson(String objectString) {
         try {
             JSONObject obj = new JSONObject(objectString);
-
+            savePaymentInfoToDB(obj.getString("payment link"));
         } catch (Throwable t) {
             Log.d("erro", "transformStringToJson: "+t);
         }
